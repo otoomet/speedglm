@@ -14,7 +14,7 @@
 
 \arguments{
   \item{object}{an object of class 'speedlgm'.}
-  \item{newdata}{An optional data frame with new data or the original data.}
+  \item{newdata}{An optional data frame or matrix with new data.}
   \item{type}{Type of prediction.}
   \item{na.action}{function determining what should be done with missing values in \code{newdata}.}
   \item{\dots}{further optional arguments}

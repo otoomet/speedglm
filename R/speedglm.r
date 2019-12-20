@@ -375,4 +375,3 @@ shglm <- function(formula, datafun, family = gaussian(), weights.fo = NULL,
   class(rval) <- "speedglm"
   rval
 }
-

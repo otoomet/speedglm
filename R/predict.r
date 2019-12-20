@@ -28,22 +28,28 @@ predict.speedglm <- function (object, newdata, type = c("link", "response"),
 
 predict.speedlm <- function (object, newdata, na.action = na.pass, ...) 
 {
-  tt <- terms(object)
-  if (!inherits(object, c("speedlm","speedglm"))) 
-    warning("calling predict.speedlm(<fake-speedlm/speedglm-object>) ...")
-  if (missing(newdata) || is.null(newdata)) {
-    if(is.null(object$fitted.values)) 
-      warning("fitted values were not returned from the speedglm object: 
+   tt <- terms(object)
+   if (!inherits(object, c("speedlm","speedglm"))) 
+      warning("calling predict.speedlm(<fake-speedlm/speedglm-object>) ...")
+   if (missing(newdata) || is.null(newdata)) {
+      if(is.null(object$fitted.values)) 
+         warning("fitted values were not returned from the speedglm object: 
               use the original data by setting argument 'newdata' or refit 
               the model by specifying fitted=TRUE.")
-    return(object$fitted.values)
-  }
-  else {
-    Terms <- delete.response(tt)
-    m <- model.frame(Terms, newdata, na.action = na.action, xlev = object$xlevels)
-    if (!is.null(cl <- attr(Terms, "dataClasses"))) 
-      .checkMFClasses(cl, m)
-    X <- model.matrix(Terms, m, contrasts.arg = object$contrasts)
+      return(object$fitted.values)
+   }
+   else {
+      ## new data present
+      Terms <- delete.response(tt)
+      if(inherits(newdata, "matrix")) {
+         X <- newdata
+         colnames(X) <- names(coef(m))
+      } else {
+         m <- model.frame(Terms, newdata, na.action = na.action, xlev = object$xlevels)
+         if (!is.null(cl <- attr(Terms, "dataClasses"))) 
+            .checkMFClasses(cl, m)
+         X <- model.matrix(Terms, m, contrasts.arg = object$contrasts)
+      }
     offset <- rep(0, nrow(X))
     if (!is.null(off.num <- attr(tt, "offset"))) 
       for (i in off.num) offset <- offset + eval(attr(tt, 
